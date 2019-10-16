@@ -3,11 +3,16 @@ defmodule MyAppWeb.HelloWorldLive do
 
   def render(assigns) do
     ~L"""
-    Message: <%= @message %>
+    <div>Message: <%= @message %></div>
+    <button phx-click="add_exclamation" phx-value-text="!!!">!!!</button>
     """
   end
 
   def mount(_session, socket) do
     {:ok, assign(socket, message: "Hello World!")}
+  end
+
+  def handle_event("add_exclamation", %{"text" => text}, socket) do
+    {:noreply, assign(socket, message: socket.assigns.message <> text)}
   end
 end
