@@ -3,23 +3,28 @@ defmodule MyAppWeb.HelloWorldLive do
 
   def render(assigns) do
     ~L"""
-    <div>Message: <%= @message %></div>
-    <button phx-click="add_exclamation" phx-value-text="!!!">!!!</button>
+    <%= for message <- @messages do %>
+      <div>Message: <%= message %></div>
+    <% end %>
+    <form phx-submit="say">
+      <input type="text" name="message"/>
+      <input type="submit">
+    </form>
     """
   end
 
   def mount(_session, socket) do
-    Phoenix.PubSub.subscribe(MyApp.PubSub, "hello-world-topic")
-    {:ok, assign(socket, message: "Hello World!")}
+    Phoenix.PubSub.subscribe(MyApp.PubSub, "chat-topic")
+    {:ok, assign(socket, messages: [])}
   end
 
-  def handle_event("add_exclamation", %{"text" => text}, socket) do
-    message = socket.assigns.message <> text
-    Phoenix.PubSub.broadcast(MyApp.PubSub, "hello-world-topic", %{message: message})
-    {:noreply, assign(socket, message: message)}
+  def handle_event("say", %{"message" => message}, socket) do
+    Phoenix.PubSub.broadcast(MyApp.PubSub, "chat-topic", %{message: message})
+    {:noreply, socket}
   end
 
   def handle_info(%{message: message}, socket) do
-    {:noreply, assign(socket, message: message)}
+    messages = socket.assigns.messages ++ [message]
+    {:noreply, assign(socket, messages: messages)}
   end
 end
