@@ -13,7 +13,7 @@ defmodule MyAppWeb.PenguinsLive do
     <div phx-keydown="move" phx-target="window" phx-throttle="75">
       <%= for penguin <- @penguins do %>
         <div style="width: 48px;height: 48px;position: absolute;
-          background: url(images/penguin.png) <%= penguin.step * -48 %>px <%= penguin.dir * -48 %>px;
+          background: url(images/penguin.png) <%= penguin.step * -48 + penguin.type * -144 %>px <%= penguin.dir * -48 %>px;
           left: <%= penguin.x * 7 %>px;
           top: <%= penguin.y * 7 %>px;">
           <div style="position: absolute;bottom: -20px;left: -20px;overflow: hidden;white-space: nowrap;">
@@ -28,8 +28,9 @@ defmodule MyAppWeb.PenguinsLive do
   def mount(%{name: name}, socket) do
     state = %{
       name: name,
-      x: :rand.uniform(@max_x),
-      y: :rand.uniform(@max_y),
+      x: :rand.uniform(@max_x) - 1,
+      y: :rand.uniform(@max_y) - 1,
+      type: :rand.uniform(4) - 1,
       dir: @down,
       step: 0
     }
