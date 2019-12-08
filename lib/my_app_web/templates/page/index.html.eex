@@ -1,1 +1,3 @@
-<%= Phoenix.LiveView.live_render(@conn, MyAppWeb.HelloWorldLive, session: %{}) %>
+<% name = :crypto.strong_rand_bytes(10) |> Base.encode64() |> binary_part(0, 10) %>
+<%= Phoenix.LiveView.live_render(@conn, MyAppWeb.HelloWorldLive, session: %{name: name}) %>
+<%= Phoenix.LiveView.live_render(@conn, MyAppWeb.PenguinsLive, session: %{name: name}) %>
